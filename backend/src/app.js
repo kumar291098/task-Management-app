@@ -1,3 +1,6 @@
+const connectDB = require('./utils/mongo_db');
+connectDB();
+
 const express= require('express');
 const cors = require('cors');
 const taskRoutes = require('./routes/taskRoutes');

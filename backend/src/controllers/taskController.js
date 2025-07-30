@@ -1,26 +1,59 @@
-const Task=require('../models/task');
+const Task = require('../models/task');
 
-exports.getTasks=(req, res)=>{
-    res.json(Task.getAll());
+// Get all tasks
+exports.getTasks = async (req, res) => {
+    try {
+        const tasks = await Task.find();
+        res.json(tasks);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.getTask=(req, res)=>{
-    const task=Task.getById(req.params.id);
-    if(!task)return res.status(404).json({message: 'Task not found'});
-    res.json(task);
+// Get task by simple taskId
+exports.getTask = async (req, res) => {
+    try {
+        const task = await Task.findOne({ taskId: req.params.taskId });
+        if (!task) return res.status(404).json({ message: "Task not found" });
+        res.json(task);
+    } catch (err) {
+        res.status(500).json({ error: err.message });  // Fixed typo here too
+    }
 };
 
-exports.createTask=(req, res)=>{
-    const newTask = Task.create(req.body);
-    res.status(201).json(newTask);
+// Create task
+exports.createTask = async (req, res) => {
+    try {
+        const newTask = new Task(req.body);
+        await newTask.save();
+        res.status(201).json(newTask);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };
-exports.updateTask=(req, res)=>{
-    const updateTask=Task.update(req.params.id, req.body);
-    if(!updateTask)return res.ststus(404).json({message:"Task not found"});
-    res.json(updatedTask);
+
+// Update task by taskId
+exports.updateTask = async (req, res) => {
+    try {
+        const updatedTask = await Task.findOneAndUpdate(
+            { taskId: req.params.taskId },
+            req.body,
+            { new: true }
+        );
+        if (!updatedTask) return res.status(404).json({ message: "Task not found" });
+        res.json(updatedTask);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
 };
-exports.deleteTask=(req, res)=>{
-    const deleted=Task.remove(req.params.id);
-    if(!deleted)return res.status(404).json({message:"Task not found"});
-    res.json({message:"Task deleted successfully", task: deleted});
+
+// Delete task by taskId
+exports.deleteTask = async (req, res) => {
+    try {
+        const deletedTask = await Task.findOneAndDelete({ taskId: req.params.taskId });
+        if (!deletedTask) return res.status(404).json({ message: "Task not found" });
+        res.json({ message: "Task deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 };

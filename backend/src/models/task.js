@@ -1,22 +1,13 @@
-let tasks=[];
-let id=1;
-module.exports={
-    getAll:()=>tasks,
-    getById: (taskId)=> tasks.find(t=>t.id === Number(taskId)),
-    create: (data)=>{
-        const newTask={id:id++, ...data};
-        tasks.push(newTask);
-        return newTask;
-    },
-    update:(taskId, data)=>{
-        const idx=tasks.findIndex(t=>t.id=== Number(taskId));
-        if(idx === -1)return null;
-        tasks[idx]={...tasks[idx], ...data};
-        return tasks[idx];
-    },
-    remove:(taskId)=>{
-        const idx=tasks.findIndex(t=>t.id===Number(taskId));
-        if(idx === -1)return null;
-        return tasks.splice(idx, 1)[0];
-    }
-};
+const mongoose = require('mongoose');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
+const taskSchema = new mongoose.Schema({
+    taskId:{type:Number, unique:true},
+    title: {type :String , required:true},
+    description: String,
+    status:{type:String, default:'pending'},
+    priority:{type:String, default:'normal'},
+    dueDate:Date
+});
+taskSchema.plugin(AutoIncrement, {inc_field: 'taskId', start_seq: 1});
+module.exports=mongoose.model('Task', taskSchema);
+
