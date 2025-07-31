@@ -1,0 +1,58 @@
+UNUSED FILES TO DELETE:
+
+ROOT DIRECTORY:
+- check-db.js
+- setup.js  
+- start.bat
+- test-server.js
+- cleanup.bat (this file too, after cleanup)
+
+CONTROLLERS:
+- src/controllers/taskControllerPostgres.js
+
+MODELS:
+- src/models/associations.js
+- src/models/task.js
+- src/models/taskPostgres.js
+- src/models/user.js
+
+ROUTES:
+- src/routes/taskRoutesPostgres.js
+
+CONFIG & UTILS:
+- src/config/database.js
+- src/utils/initDatabase.js
+- src/utils/mongo_db.js
+- src/config/ (entire directory)
+- src/utils/ (entire directory)
+
+FINAL CLEAN STRUCTURE SHOULD BE:
+backend/
+├── src/
+│   ├── db/
+│   │   ├── postgres.js ✅
+│   │   └── mongodb.js ✅
+│   ├── models/
+│   │   ├── userModel.js ✅
+│   │   └── taskModel.js ✅
+│   ├── routes/
+│   │   ├── userRoutes.js ✅
+│   │   └── taskRoutes.js ✅
+│   ├── controllers/
+│   │   ├── userController.js ✅
+│   │   └── taskController.js ✅
+│   ├── middleware/
+│   │   └── auth.js ✅
+│   └── app.js ✅
+├── .env ✅
+├── package.json ✅
+├── package-lock.json ✅
+├── node_modules/ ✅
+├── .gitignore ✅
+└── README.md ✅
+
+TO DELETE THESE FILES:
+1. Open File Explorer
+2. Navigate to: E:\NodeReact\task-management-app\backend
+3. Delete the files listed above
+4. Delete empty directories: src/config and src/utils
