@@ -1,33 +1,80 @@
 // src/pages/TaskPage.jsx
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Row, Col, Button } from 'antd';
-import TaskCard from '../components/TaskCard';
-import TaskForm from '../components/TaskForm';
+import React from 'react';
+import { Row, Col } from 'antd';
+import { useTasks } from '../hooks/useTasks';
+import { useTaskModal } from '../hooks/useTaskModal';
+import AddTaskButton from '../components/AddTaskButton';
+import TaskColumn from '../components/TaskColumn';
+import TaskModal from '../components/TaskModal';
 
 const TaskPage = () => {
-  const [tasks, setTasks] = useState([]);
+  const {
+    pendingTasks,
+    completedTasks,
+    createTask,
+    updateTask,
+    deleteTask,
+    updateTaskStatus
+  } = useTasks();
 
-  const fetchTasks = async () => {
-    const res = await axios.get('http://localhost:5000/api/tasks');
-    setTasks(res.data);
+  const {
+    isModalVisible,
+    editingTask,
+    openAddModal,
+    openEditModal,
+    closeModal
+  } = useTaskModal();
+
+  const handleTaskCreated = () => {
+    closeModal();
+    // Task list will be refreshed automatically by useTasks hook
   };
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+  const handleTaskUpdated = () => {
+    closeModal();
+    // Task list will be refreshed automatically by useTasks hook
+  };
 
   return (
-    <>
-      <TaskForm onTaskCreated={fetchTasks} />
-      <Row gutter={[16, 16]}>
-        {tasks.map(task => (
-          <Col key={task._id} span={8}>
-            <TaskCard task={task} onRefresh={fetchTasks} />
-          </Col>
-        ))}
+    <div style={{ padding: '24px' }}>
+      <AddTaskButton onClick={openAddModal} />
+
+      <Row gutter={[24, 24]}>
+        <Col span={12}>
+          <TaskColumn
+            title="Pending Tasks"
+            tasks={pendingTasks}
+            status="pending"
+            backgroundColor="#f5f5f5"
+            borderColor="#d9d9d9"
+            onEdit={openEditModal}
+            onDelete={deleteTask}
+            onStatusChange={updateTaskStatus}
+          />
+        </Col>
+
+        <Col span={12}>
+          <TaskColumn
+            title="Completed Tasks"
+            tasks={completedTasks}
+            status="completed"
+            backgroundColor="#f6ffed"
+            borderColor="#b7eb8f"
+            onEdit={openEditModal}
+            onDelete={deleteTask}
+            onStatusChange={updateTaskStatus}
+          />
+        </Col>
       </Row>
-    </>
+
+      <TaskModal
+        isVisible={isModalVisible}
+        editingTask={editingTask}
+        onClose={closeModal}
+        onTaskCreated={handleTaskCreated}
+        onTaskUpdated={handleTaskUpdated}
+      />
+    </div>
   );
 };
 
