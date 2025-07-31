@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react';
 import { message } from 'antd';
 import { taskService } from '../services/taskService';
 
-export const useTasks = () => {
+export const useTasks = (userId = null) => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchTasks = async () => {
     try {
       setLoading(true);
-      const tasksData = await taskService.getAllTasks();
+      const tasksData = await taskService.getAllTasks(userId);
       setTasks(tasksData);
     } catch (error) {
       message.error('Failed to fetch tasks');
@@ -22,6 +22,10 @@ export const useTasks = () => {
 
   const createTask = async (taskData) => {
     try {
+      // Add userId to task data if provided
+      if (userId) {
+        taskData.userId = userId;
+      }
       await taskService.createTask(taskData);
       message.success('Task created successfully!');
       fetchTasks();
@@ -66,7 +70,7 @@ export const useTasks = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [userId]);
 
   const pendingTasks = tasks.filter(task => task.status === 'pending');
   const completedTasks = tasks.filter(task => task.status === 'completed');

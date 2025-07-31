@@ -4,12 +4,14 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:5000/api/tasks';
 
 export const taskService = {
-  // Get all tasks
-  getAllTasks: async () => {
-    const response = await axios.get(API_BASE_URL);
+  // Get all tasks or tasks by userId
+  getAllTasks: async (userId = null) => {
+    const url = userId ? `${API_BASE_URL}?userId=${userId}` : API_BASE_URL;
+    const response = await axios.get(url);
     return response.data;
   },
 
+  
   // Create a new task
   createTask: async (taskData) => {
     const response = await axios.post(API_BASE_URL, taskData);

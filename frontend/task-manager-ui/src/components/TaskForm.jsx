@@ -6,7 +6,7 @@ import { taskService } from '../services/taskService';
 
 const { Option } = Select;
 
-const TaskForm = ({ onTaskCreated, editingTask, onTaskUpdated, onCancelEdit, isModal }) => {
+const TaskForm = ({ onTaskCreated, editingTask, onTaskUpdated, onCancelEdit, isModal, currentUserId }) => {
   const [form] = Form.useForm();
   const isEditing = !!editingTask;
 
@@ -59,6 +59,16 @@ const TaskForm = ({ onTaskCreated, editingTask, onTaskUpdated, onCancelEdit, isM
       <Form.Item name="description" label="Description">
         <Input.TextArea />
       </Form.Item>
+      {!isEditing && (
+        <Form.Item 
+          name="userId" 
+          label="User ID" 
+          rules={[{ required: true, message: 'Please enter a user ID' }]}
+          initialValue={currentUserId}
+        >
+          <Input placeholder="Enter user ID (e.g., user1, john, etc.)" />
+        </Form.Item>
+      )}
       <Form.Item name="status" label="Status" initialValue="pending">
         <Select>
           <Option value="pending">Pending</Option>

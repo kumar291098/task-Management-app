@@ -1,4 +1,4 @@
-// src/components/TaskModal.jsx
+  // src/components/TaskModal.jsx
 import React from 'react';
 import { Modal } from 'antd';
 import TaskForm from './TaskForm';
@@ -8,7 +8,8 @@ const TaskModal = ({
   editingTask, 
   onClose, 
   onTaskCreated, 
-  onTaskUpdated 
+  onTaskUpdated,
+  currentUserId 
 }) => {
   const isEditing = !!editingTask;
   const title = isEditing ? "Edit Task" : "Add New Task";
@@ -27,6 +28,7 @@ const TaskModal = ({
         onTaskUpdated={onTaskUpdated}
         onCancelEdit={onClose}
         isModal={true}
+        currentUserId={currentUserId}
       />
     </Modal>
   );

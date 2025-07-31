@@ -60,6 +60,7 @@ const TaskCard = ({ task, onEdit, onDelete, onDragStart, draggable }) => {
       <Space style={{ marginBottom: 16 }}>
         <Tag color={getPriorityColor(task.priority)}>Priority: {task.priority}</Tag>
         <Tag color="purple">Due: {new Date(task.dueDate).toLocaleDateString()}</Tag>
+        <Tag color="blue">User: {task.userId}</Tag>
       </Space>
       <Space>
         <Button 

@@ -1,13 +1,20 @@
+
 // src/pages/TaskPage.jsx
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col } from 'antd';
 import { useTasks } from '../hooks/useTasks';
 import { useTaskModal } from '../hooks/useTaskModal';
 import AddTaskButton from '../components/AddTaskButton';
 import TaskColumn from '../components/TaskColumn';
 import TaskModal from '../components/TaskModal';
+import UserSelector from '../components/UserSelector';
 
-const TaskPage = () => {
+const TaskPage = ({ currentUser }) => {
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  
+  // For admin: use selectedUserId, for regular users: use their own ID
+  const effectiveUserId = currentUser?.role === 'admin' ? selectedUserId : currentUser?.id;
+  
   const {
     pendingTasks,
     completedTasks,
@@ -15,7 +22,7 @@ const TaskPage = () => {
     updateTask,
     deleteTask,
     updateTaskStatus
-  } = useTasks();
+  } = useTasks(effectiveUserId);
 
   const {
     isModalVisible,
@@ -24,6 +31,14 @@ const TaskPage = () => {
     openEditModal,
     closeModal
   } = useTaskModal();
+
+  const handleUserChange = (userId) => {
+    setSelectedUserId(userId);
+  };
+
+  const handleViewAll = () => {
+    setSelectedUserId(null);
+  };
 
   const handleTaskCreated = () => {
     closeModal();
@@ -37,6 +52,13 @@ const TaskPage = () => {
 
   return (
     <div style={{ padding: '24px' }}>
+      <UserSelector 
+        currentUserId={selectedUserId}
+        onUserChange={handleUserChange}
+        onViewAll={handleViewAll}
+        currentUser={currentUser}
+      />
+      
       <AddTaskButton onClick={openAddModal} />
 
       <Row gutter={[24, 24]}>
@@ -60,9 +82,9 @@ const TaskPage = () => {
             status="completed"
             backgroundColor="#f6ffed"
             borderColor="#b7eb8f"
+            onStatusChange={updateTaskStatus}
             onEdit={openEditModal}
             onDelete={deleteTask}
-            onStatusChange={updateTaskStatus}
           />
         </Col>
       </Row>
@@ -73,6 +95,7 @@ const TaskPage = () => {
         onClose={closeModal}
         onTaskCreated={handleTaskCreated}
         onTaskUpdated={handleTaskUpdated}
+        currentUserId={effectiveUserId}
       />
     </div>
   );
